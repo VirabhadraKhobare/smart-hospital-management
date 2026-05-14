@@ -31,7 +31,7 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CLIENT_URL || '*' || "https://smart-hospital-management-nu.vercel.app/",
+  origin: process.env.CLIENT_URL || '*',
   credentials: true
 }));
 app.use(morgan('dev'));
