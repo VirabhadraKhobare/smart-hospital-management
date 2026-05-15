@@ -18,6 +18,7 @@ import ServicesPage from "./pages/Services/ServicesPage.jsx";
 import LaboratoryPage from "./pages/Lab/LaboratoryPage.jsx";
 import PharmacyPage from "./pages/Pharmacy/PharmacyPage.jsx";
 import ProfilePage from "./pages/Profile/ProfilePage.jsx";
+import { ROLE_DEFAULT_PATH } from "./utils/constants.js";
 
 const AppLayout = ({ children }) => {
   const { user } = useAuth();
@@ -34,9 +35,26 @@ const AppLayout = ({ children }) => {
 };
 
 const HomeRedirect = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
-  return <Navigate to={isAuthenticated ? "/dashboard" : "/register"} replace />;
+  return (
+    <Navigate
+      to={
+        isAuthenticated
+          ? ROLE_DEFAULT_PATH[user?.role] || "/dashboard"
+          : "/register"
+      }
+      replace
+    />
+  );
+};
+
+const AuthenticatedFallback = () => {
+  const { user } = useAuth();
+
+  return (
+    <Navigate to={ROLE_DEFAULT_PATH[user?.role] || "/dashboard"} replace />
+  );
 };
 
 function App() {
@@ -62,10 +80,7 @@ function App() {
                 <Route path="laboratory" element={<LaboratoryPage />} />
                 <Route path="pharmacy" element={<PharmacyPage />} />
                 <Route path="profile" element={<ProfilePage />} />
-                <Route
-                  path="*"
-                  element={<Navigate to="/dashboard" replace />}
-                />
+                <Route path="*" element={<AuthenticatedFallback />} />
               </Routes>
             </AppLayout>
           </ProtectedRoute>

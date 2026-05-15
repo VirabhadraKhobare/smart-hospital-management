@@ -702,11 +702,54 @@ button:disabled {
   .sidebar-shell {
     position: relative;
     height: auto;
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .sidebar-brand {
+    padding: 10px 12px;
+  }
+
+  .sidebar-brand h2 {
+    font-size: 1.05rem !important;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
+  }
+
+  .sidebar-link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 10px 12px;
+  }
+
+  .sidebar-footer {
+    display: none;
   }
 
   .navbar-shell,
   .page-head {
     align-items: flex-start;
+  }
+
+  .navbar-shell {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .navbar-shell .row-actions {
+    width: 100%;
+    justify-content: flex-start !important;
+  }
+
+  .toolbar-group,
+  .search-input {
+    min-width: 0;
   }
 
   .toolbar {
@@ -720,11 +763,67 @@ button:disabled {
     padding: 16px;
   }
 
+  .page-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .page-head .btn,
+  .row-actions .btn {
+    width: 100%;
+  }
+
+  .navbar-title h2 {
+    font-size: 1.2rem;
+  }
+
+  .user-chip {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 11px 12px;
+  }
+
   .modal {
     padding: 16px;
   }
 
   .auth-card form {
     padding: 22px 18px;
+  }
+
+  .auth-panel {
+    padding: 24px 18px;
+  }
+
+  .auth-panel h1 {
+    line-height: 1.05;
+  }
+}
+
+@media (max-width: 420px) {
+  .content-wrap {
+    padding: 14px;
+  }
+
+  .sidebar-shell,
+  .navbar-shell {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .modal-overlay {
+    padding: 12px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 }

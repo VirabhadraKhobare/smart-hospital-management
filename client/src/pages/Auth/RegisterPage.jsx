@@ -8,9 +8,10 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext.jsx";
+import { ROLE_DEFAULT_PATH } from "../../utils/constants.js";
 
 const RegisterPage = () => {
-  const { register, loading, isAuthenticated } = useAuth();
+  const { register, loading, isAuthenticated, user } = useAuth();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -21,7 +22,9 @@ const RegisterPage = () => {
   const [errors, setErrors] = useState({});
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return (
+      <Navigate to={ROLE_DEFAULT_PATH[user?.role] || "/dashboard"} replace />
+    );
   }
 
   const validate = () => {

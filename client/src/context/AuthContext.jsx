@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import api from "../services/api.js";
+import { ROLE_DEFAULT_PATH } from "../utils/constants.js";
 
 const AuthContext = createContext(null);
 
@@ -38,7 +39,7 @@ export const AuthProvider = ({ children }) => {
       setToken(data.token);
       setUser(data.user);
       toast.success("Welcome back");
-      navigate("/dashboard");
+      navigate(ROLE_DEFAULT_PATH[data.user?.role] || "/dashboard");
       return data;
     } catch (error) {
       const message = error.response?.data?.message || "Login failed";

@@ -20,27 +20,42 @@ const PatientDetailPage = () => {
     const fetchData = async () => {
       try {
         const [profileRes, appointmentRes, billingRes, labRes] =
-          await Promise.all([
+          await Promise.allSettled([
             api.get(`/patients/${id}`),
             api.get("/appointments", { params: { limit: 200 } }),
             api.get("/billing", { params: { limit: 200 } }),
             api.get("/laboratory", { params: { limit: 200 } }),
           ]);
 
-        setProfile(profileRes.data);
-        setAppointments(
-          (appointmentRes.data.data || []).filter(
-            (item) => item.patientId?._id === id,
-          ),
-        );
-        setBilling(
-          (billingRes.data.data || []).filter(
-            (item) => item.patientId?._id === id,
-          ),
-        );
-        setLab(
-          (labRes.data.data || []).filter((item) => item.patientId?._id === id),
-        );
+        if (profileRes.status === "fulfilled") {
+          setProfile(profileRes.value.data);
+        } else {
+          throw profileRes.reason;
+        }
+
+        if (appointmentRes.status === "fulfilled") {
+          setAppointments(
+            (appointmentRes.value.data.data || []).filter(
+              (item) => item.patientId?._id === id,
+            ),
+          );
+        }
+
+        if (billingRes.status === "fulfilled") {
+          setBilling(
+            (billingRes.value.data.data || []).filter(
+              (item) => item.patientId?._id === id,
+            ),
+          );
+        }
+
+        if (labRes.status === "fulfilled") {
+          setLab(
+            (labRes.value.data.data || []).filter(
+              (item) => item.patientId?._id === id,
+            ),
+          );
+        }
       } catch (error) {
         toast.error(
           error.response?.data?.message || "Failed to load patient detail",

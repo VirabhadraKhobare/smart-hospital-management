@@ -16,6 +16,7 @@ import { useAuth } from "../../context/AuthContext.jsx";
 import api from "../../services/api.js";
 import formatCurrency from "../../utils/formatCurrency.js";
 import formatDate from "../../utils/formatDate.js";
+import { ROLE_NAV } from "../../utils/constants.js";
 import StatCard from "../../components/StatCard.jsx";
 import Table from "../../components/Table.jsx";
 
@@ -31,6 +32,7 @@ const dashboardLinks = [
 const DashboardPage = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
+  const [appointmentsByStatus, setAppointmentsByStatus] = useState({});
   const [activity, setActivity] = useState([]);
   const [lowStockMeds, setLowStockMeds] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +43,7 @@ const DashboardPage = () => {
       setRefreshing(true);
       const { data } = await api.get("/dashboard/stats");
       setStats(data.totals);
+      setAppointmentsByStatus(data.appointmentsByStatus || {});
       setActivity(data.recentActivity || []);
       setLowStockMeds(data.lowStockMedicines || []);
     } catch (error) {
@@ -58,10 +61,19 @@ const DashboardPage = () => {
   }, []);
 
   const appointmentBadges = useMemo(() => {
-    return Object.entries(stats?.appointmentsByStatus || {}).map(
-      ([status, count]) => ({ status, count }),
-    );
-  }, [stats]);
+    return Object.entries(appointmentsByStatus).map(([status, count]) => ({
+      status,
+      count,
+    }));
+  }, [appointmentsByStatus]);
+
+  const quickLinks = useMemo(() => {
+    const allowed = new Set(ROLE_NAV[user?.role] || []);
+    return dashboardLinks.filter((item) => {
+      const key = item.to.replace("/", "");
+      return allowed.has(key);
+    });
+  }, [user?.role]);
 
   const activityColumns = [
     {
@@ -190,7 +202,7 @@ const DashboardPage = () => {
           </div>
 
           <div className="list-grid">
-            {dashboardLinks.map(({ to, label, icon: Icon }) => (
+            {quickLinks.map(({ to, label, icon: Icon }) => (
               <Link
                 key={to}
                 to={to}

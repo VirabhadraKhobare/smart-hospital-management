@@ -3,14 +3,17 @@ import { Link, Navigate } from "react-router-dom";
 import { ArrowRight, ShieldCheck, Sparkles, Stethoscope } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext.jsx";
+import { ROLE_DEFAULT_PATH } from "../../utils/constants.js";
 
 const LoginPage = () => {
-  const { login, loading, isAuthenticated } = useAuth();
+  const { login, loading, isAuthenticated, user } = useAuth();
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
 
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return (
+      <Navigate to={ROLE_DEFAULT_PATH[user?.role] || "/dashboard"} replace />
+    );
   }
 
   const validate = () => {
