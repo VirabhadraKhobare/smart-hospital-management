@@ -1,6 +1,30 @@
 import axios from "axios";
 
-const resolvedBaseURL = import.meta.env.VITE_API_URL || "/api";
+const normalizeBaseURL = (value) => {
+  if (!value) {
+    return "/api";
+  }
+
+  const trimmedValue = value.trim().replace(/\/+$/, "");
+
+  if (!trimmedValue) {
+    return "/api";
+  }
+
+  if (/^https?:\/\//i.test(trimmedValue)) {
+    return trimmedValue.endsWith("/api") ? trimmedValue : `${trimmedValue}/api`;
+  }
+
+  if (trimmedValue === "/api" || trimmedValue.endsWith("/api")) {
+    return trimmedValue;
+  }
+
+  return trimmedValue.startsWith("/")
+    ? `${trimmedValue}/api`
+    : `/${trimmedValue}/api`;
+};
+
+const resolvedBaseURL = normalizeBaseURL(import.meta.env.VITE_API_URL);
 
 const api = axios.create({
   baseURL: resolvedBaseURL,
